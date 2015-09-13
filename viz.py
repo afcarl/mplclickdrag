@@ -1,15 +1,16 @@
 from __future__ import division
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 
 
 class Interactive(object):
-    def __init__(self, fig, ax, initial_point):
-        self.ax = ax
+    def __init__(self, initial_point):
+        self.fig = fig = plt.figure(figsize=(5,5))
         self.canvas = canvas = fig.canvas
+        self.ax = ax = plt.subplot(111)
 
-        self.circle = Circle(initial_point, radius=0.1, facecolor='r', alpha=0.5, animated=True)
+        self.circle = Circle(
+            initial_point, radius=0.1, facecolor='r', animated=True)
         ax.add_patch(self.circle)
 
         self._dragging = False
@@ -49,12 +50,5 @@ class Interactive(object):
 
 
 if __name__ == '__main__':
-    fig = plt.figure(figsize=(5,5))
-    ax = plt.subplot(111)
-
-    v = Interactive(fig, ax, (0,0))
-
-    ax.set_xlim((-6,6))
-    ax.set_ylim((-6,6))
-
+    v = Interactive((0,0))
     plt.show()
