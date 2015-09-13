@@ -9,8 +9,10 @@ class Interactive(object):
         self.canvas = canvas = fig.canvas
         self.ax = ax = plt.subplot(111)
 
+        ax.axis([-1,1,-1,1])
+
         self.circle = Circle(
-            initial_point, radius=0.1, facecolor='r', animated=True)
+            initial_point, radius=0.01, facecolor='r', animated=True)
         ax.add_patch(self.circle)
 
         self._dragging = False
@@ -21,9 +23,9 @@ class Interactive(object):
         canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
 
     def draw_callback(self, event):
-        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+        self.background = self.canvas.copy_from_bbox(self.fig.bbox)
         self.ax.draw_artist(self.circle)
-        self.canvas.blit(self.ax.bbox)
+        self.canvas.blit(self.fig.bbox)
 
     def button_press_callback(self, event):
         if event.inaxes is None or event.button != 1:
@@ -46,7 +48,7 @@ class Interactive(object):
         self.circle.center = x, y
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.circle)
-        self.canvas.blit(self.ax.bbox)
+        self.canvas.blit(self.fig.bbox)
 
 
 if __name__ == '__main__':
