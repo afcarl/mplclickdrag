@@ -5,8 +5,6 @@ from matplotlib.patches import Circle
 
 
 class Interactive(object):
-    epsilon = 5.  # pixel tolerance for click
-
     def __init__(self, fig, ax, initial_point):
         self.ax = ax
         self.canvas = canvas = fig.canvas
@@ -30,12 +28,8 @@ class Interactive(object):
         if event.inaxes is None or event.button != 1:
             return
 
-        x, y = self.circle.center
-        xc, yc = event.xdata, event.ydata
-
-        if np.sqrt((x-xc)**2 + (y-yc)**2) < self.epsilon:
-            self._reposition_circle(xc, yc)
-            self._dragging = True
+        self._dragging = True
+        self._reposition_circle(event.xdata, event.ydata)
 
     def button_release_callback(self, event):
         if event.button == 1:
