@@ -6,14 +6,16 @@ from matplotlib import cm
 
 
 class Interactive(object):
-    def __init__(self):
+    def __init__(self, draw_func, init_image):
         self.fig, (self.ax, self.imax) = fig, (ax, imax) = \
             plt.subplots(1, 2, figsize=(10, 5), facecolor='white')
         self.canvas = canvas = fig.canvas
 
+        self.draw_func = draw_func
+
         self._init_controlaxis(ax)
-        self._init_imageaxis(imax)
-        plt.tight_layout()
+        self._init_imageaxis(imax, init_image)
+        fig.tight_layout()
 
         canvas.mpl_connect('draw_event', self.draw_callback)
         canvas.mpl_connect('button_press_event', self.button_press_callback)
@@ -26,29 +28,25 @@ class Interactive(object):
         ax.set_yticks([])
         ax.autoscale(False)
         self.circle = circle = Circle(
-            (0,0), radius=0.01, facecolor='r', animated=True)
+            (0,0), radius=0.02, facecolor='r', animated=True)
         ax.add_patch(circle)
         self._dragging = False
 
-    def _init_imageaxis(self, imax):
+    def _init_imageaxis(self, imax, init_image):
         imax.set_axis_off()
-        self.A = np.random.randn(900,2)
-        self.image = imax.imshow(np.random.randn(30,30), cmap=cm.YlGnBu)
+        self.image = imax.imshow(init_image, cmap=cm.YlGnBu)
         imax.autoscale(False)
 
     def draw_callback(self, event):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-
         self.ax.draw_artist(self.circle)
         self.imax.draw_artist(self.image)
-
         self.canvas.blit(self.ax.bbox)
         self.canvas.blit(self.imax.bbox)
 
     def button_press_callback(self, event):
-        if event.inaxes is None or event.button != 1:
+        if event.inaxes is not self.ax or event.button != 1:
             return
-
         self._dragging = True
         self._update(event.xdata, event.ydata)
 
@@ -73,11 +71,17 @@ class Interactive(object):
         self.canvas.blit(self.ax.bbox)
 
     def _update_image(self, x, y):
-        self.image.set_data(self.A.dot((x,y)).reshape((30,30)))
+        self.image.set_data(self.draw_func(x, y))
         self.imax.draw_artist(self.image)
         self.canvas.blit(self.imax.bbox)
 
 
 if __name__ == '__main__':
-    v = Interactive()
+    A = np.random.randn(30*30, 2)
+    init_image = np.random.randn(30, 30)
+
+    def draw(x, y):
+        return A.dot((x,y)).reshape((30,30))
+
+    v = Interactive(draw, init_image)
     plt.show()
