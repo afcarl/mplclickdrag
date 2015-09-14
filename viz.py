@@ -49,20 +49,18 @@ class Interactive(object):
         self.canvas.blit(self.imax.bbox)
 
     def button_press(self, event):
-        if event.inaxes is not self.ax or event.button != 1:
-            return
-        self._dragging = True
-        self._update(event.xdata, event.ydata)
+        if event.inaxes is self.ax and event.button == 1:
+            self._dragging = True
+            self._update(event.xdata, event.ydata)
 
     def button_release(self, event):
         if event.button == 1:
             self._dragging = False
 
     def motion_notify(self, event):
-        if event.inaxes is not self.ax or event.button != 1:
-            return
-        if self._dragging:
-            self._update(event.xdata, event.ydata)
+        if event.inaxes is self.ax and event.button == 1:
+            if self._dragging:
+                self._update(event.xdata, event.ydata)
 
     ### updating
 
