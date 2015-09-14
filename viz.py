@@ -13,6 +13,7 @@ class Interactive(object):
 
         self._init_controlaxis(ax)
         self._init_imageaxis(imax)
+        plt.tight_layout()
 
         canvas.mpl_connect('draw_event', self.draw_callback)
         canvas.mpl_connect('button_press_event', self.button_press_callback)
