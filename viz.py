@@ -17,10 +17,10 @@ class Interactive(object):
         self._init_imageaxis(imax, init_image)
         fig.tight_layout()
 
-        canvas.mpl_connect('draw_event', self.draw_callback)
-        canvas.mpl_connect('button_press_event', self.button_press_callback)
-        canvas.mpl_connect('button_release_event', self.button_release_callback)
-        canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
+        canvas.mpl_connect('draw_event', self.draw)
+        canvas.mpl_connect('button_press_event', self.button_press)
+        canvas.mpl_connect('button_release_event', self.button_release)
+        canvas.mpl_connect('motion_notify_event', self.motion_notify)
 
     def _init_controlaxis(self, ax):
         ax.axis([-1,1,-1,1])
@@ -37,24 +37,24 @@ class Interactive(object):
         self.image = imax.imshow(init_image, cmap=cm.YlGnBu)
         imax.autoscale(False)
 
-    def draw_callback(self, event):
+    def draw(self, event):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         self.ax.draw_artist(self.circle)
         self.imax.draw_artist(self.image)
         self.canvas.blit(self.ax.bbox)
         self.canvas.blit(self.imax.bbox)
 
-    def button_press_callback(self, event):
+    def button_press(self, event):
         if event.inaxes is not self.ax or event.button != 1:
             return
         self._dragging = True
         self._update(event.xdata, event.ydata)
 
-    def button_release_callback(self, event):
+    def button_release(self, event):
         if event.button == 1:
             self._dragging = False
 
-    def motion_notify_callback(self, event):
+    def motion_notify(self, event):
         if event.inaxes is not self.ax or event.button != 1:
             return
         if self._dragging:
