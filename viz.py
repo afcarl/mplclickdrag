@@ -5,29 +5,21 @@ from matplotlib.patches import Circle
 from matplotlib import cm
 
 
-# TODO image doens't get updated
-
 class Interactive(object):
     def __init__(self, initial_point):
-        self.fig, (ax, imax) = plt.subplots(2, 1, figsize=(5, 10), facecolor='white')
-        self.canvas = canvas = self.fig.canvas
+        self.fig, (self.ax, self.imax) = fig, (ax, imax) = \
+            plt.subplots(1, 2, figsize=(10, 5), facecolor='white')
+        self.canvas = canvas = fig.canvas
 
-        # set up clicking subplot
-
-        self.ax = ax
-        ax.set_axis_off()
         ax.axis([-1,1,-1,1])
+        ax.set_xticks([])
+        ax.set_yticks([])
         ax.autoscale(False)
-
-        self.circle = Circle(
+        self.circle = circle = Circle(
             initial_point, radius=0.01, facecolor='r', animated=True)
-        ax.add_patch(self.circle)
-
+        ax.add_patch(circle)
         self._dragging = False
 
-        # set up image subplot
-
-        self.imax = imax
         imax.set_axis_off()
         self.A = np.random.randn(900,2)
         self.image = imax.imshow(np.random.randn(30,30), cmap=cm.YlGnBu)
