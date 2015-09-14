@@ -22,6 +22,8 @@ class Interactive(object):
         canvas.mpl_connect('button_release_event', self.button_release)
         canvas.mpl_connect('motion_notify_event', self.motion_notify)
 
+    ### initialization
+
     def _init_controlaxis(self, ax):
         ax.axis([-1,1,-1,1])
         ax.set_xticks([])
@@ -36,6 +38,8 @@ class Interactive(object):
         imax.set_axis_off()
         self.image = imax.imshow(init_image, cmap=cm.YlGnBu)
         imax.autoscale(False)
+
+    ### matplotlib callbacks
 
     def draw(self, event):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
@@ -59,6 +63,8 @@ class Interactive(object):
             return
         if self._dragging:
             self._update(event.xdata, event.ydata)
+
+    ### updating
 
     def _update(self, x, y):
         self._reposition_circle(x, y)
